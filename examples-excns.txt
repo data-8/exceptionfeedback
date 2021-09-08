@@ -34,3 +34,29 @@ t.with_column('doubled', 2*c)
 ValueError: (something?)
 
 Nested array again
+
+
+t = Table().with_column('a', a, 'b', b)
+
+TypeError: with_column() takes from 3 to 4 position arguments but 5 were given
+
+Mistake: should have used .with_columns()
+
+
+t = Table.read_table(sales.csv)
+
+NameError: name 'sales' is not defined
+
+Mistake: should have put quotes around sales.csv
+
+
+t = Table.read_table(..)
+t2 = t.where('Year', are.below(2000))
+t2 / t.num_rows
+
+TypeError: unsupported operand type(s) for /: 'Table' and 'int'
+
+Mistake: should have used t2.num_rows instead of t2
+
+
+
