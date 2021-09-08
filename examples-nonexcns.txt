@@ -1,0 +1,7 @@
+Mistakes that don't cause exceptions to be thrown
+
+
+celsius = make_array(...)
+fahr = make_array(1.8*celsius + 32)
+
+Mistake: Don't need make_array(); creates a nested array

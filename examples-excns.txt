@@ -1,0 +1,36 @@
+Mistakes that cause exceptions to be thrown
+
+
+t = Table.read_table(...)
+
+NameError: name 'Table' is not defined
+
+Mistake: they need to rerun cells in their notebook -- easiest
+solution is Kernel > Restart & Rerun All
+
+
+t = Table.read_table(...)
+first_five = t.show(5)
+first_five.column(0)
+
+AttributeError: 'NoneType' object has no attribute 'column'
+
+Mistake: t.show() returns None.  Should use .take()
+
+
+t = Table.read_table(...)
+costs = t.select(0)
+total_cost = sum(costs)
+
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+
+Mistake: .select() returns a table.  Should use .column() to get an array
+
+
+t = Table.read_table(...)
+c = make_array(t.column(0))
+t.with_column('doubled', 2*c)
+
+ValueError: (something?)
+
+Nested array again
