@@ -59,4 +59,9 @@ TypeError: unsupported operand type(s) for /: 'Table' and 'int'
 Mistake: should have used t2.num_rows instead of t2
 
 
+num_even_year_movies = imdb.column("Year")%2.where("Year", are.equal_to(0))
 
+SyntaxError: invalid syntax
+
+Mistake: Operator precedence (2.where()).
+Also, can't use .where() on an array.
