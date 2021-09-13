@@ -37,13 +37,16 @@ class Announce:
         display(Markdown("Please fill out this quick survey to help us improve the the error feedback [Data 8 Error Feedback Survey](https://forms.gle/6UZQjwZmAxVDMsBR6)"))
 
 def test_exception(self, etype, value, tb, tb_offset=None):
-    announce = Announce(etype, value)
-    announce.title()
-    announce.tips()
-    announce.data8()
-    announce.furtherTips()
-    announce.feedback()
-    self.showtraceback((etype, value, tb), tb_offset=tb_offset)
+    try:
+        announce = Announce(etype, value)
+        announce.title()
+        announce.tips()
+        announce.data8()
+        announce.furtherTips()
+        announce.feedback()
+        self.showtraceback((etype, value, tb), tb_offset=tb_offset)
+    except:
+        self.showtraceback((etype, value, tb), tb_offset=tb_offset)
 
 get_ipython().set_custom_exc((Exception,), test_exception)
     
