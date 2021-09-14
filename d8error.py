@@ -34,7 +34,7 @@ class Announce:
     def default(self):
         display(Markdown("It seems we have a "+self.errorname+ ". " +self.errorname+ "s are usually because of:"))
     def feedback(self):
-        display(Markdown("Please fill out this quick survey to help us improve the the error feedback [Data 8 Error Feedback Survey](https://forms.gle/t288NPSJkfMaUiHRA)"))
+        display(Markdown("Please fill out this quick survey to help us improve the the error feedback [Data 8 Error Feedback Survey](https://forms.gle/4d8CQG1p3SHL9zfV7)"))
 
 def test_exception(self, etype, value, tb, tb_offset=None):
     try:
