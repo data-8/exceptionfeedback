@@ -65,7 +65,8 @@
           {
                "not callable": {
                     "helptext": [
-                         "Using a variable or object that isn't a function but using it as one, i.e `3(2)`, in this case we are using 3 as a function, if you wanted to multiply you need `3*(2)`"
+                         "Using a variable or object that isn't a function but using it as one, i.e `3(2)`, in this case we are using 3 as a function, if you wanted to multiply you need `3*(2)`",
+                         "Using `tbl.columns` instead of `tbl.column`"
                     ]
                }
           },
