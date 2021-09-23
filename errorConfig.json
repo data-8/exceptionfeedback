@@ -75,6 +75,13 @@
                          "Using a function that takes in a different number of arguments than provided"
                     ]
                }
+          },
+          {
+               "not supported between": {
+                    "helptext": [
+                         "Using two different incompatible object types in an operation like comparison, `3 == [3,3]`. Notice here we want to use a list and number, but this kind of operation isn't allowed, one needs to convert to array with `make_array` or review the problem specifications"
+                    ]
+               }
           }
      ],
      "ValueError": [
