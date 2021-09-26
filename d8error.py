@@ -6,6 +6,21 @@ class Announce:
         self.etype = etype
         self.value = value
         self.errorname = str(etype().__class__.__name__)
+        with open("errorConfig.json", "r") as f:
+            diction = json.load(f)
+        exceptionClass = diction.get(self.errorname)
+        prewrittenMessge = False
+        
+        if exceptionClass is None:
+            self.print = False
+        else:
+            self.print = True
+            for i in exceptionClass:
+                key, items = list(i.items())[0]
+                if (key in str(value)):
+                    prewrittenMessge = True
+            self.print = prewrittenMessge
+        
     def tips(self):
         etype = self.etype
         value = self.value
@@ -34,16 +49,17 @@ class Announce:
     def default(self):
         display(Markdown("It seems we have a "+self.errorname+ ". " +self.errorname+ "s are usually because of:"))
     def feedback(self):
-        display(Markdown("Please fill out this quick survey to help us improve the the error feedback [Data 8 Error Feedback Survey](https://forms.gle/4d8CQG1p3SHL9zfV7)"))
+        display(Markdown("Please fill out this quick survey to help us improve the the error feedback [Data 8 Error Feedback Survey](https://forms.gle/6UZQjwZmAxVDMsBR6)"))
 
 def test_exception(self, etype, value, tb, tb_offset=None):
     try:
         announce = Announce(etype, value)
-        announce.title()
-        announce.tips()
-        announce.data8()
-        announce.furtherTips()
-        announce.feedback()
+        if announce.print:
+            announce.title()
+            announce.tips()
+            announce.data8()
+            announce.furtherTips()
+            announce.feedback()
         self.showtraceback((etype, value, tb), tb_offset=tb_offset)
     except:
         self.showtraceback((etype, value, tb), tb_offset=tb_offset)
