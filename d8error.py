@@ -24,13 +24,13 @@ class Announce:
             
         if not os.path.isfile("errorLog.csv"):
             with open('errorLog.csv', 'w', newline='') as f:
-                print("created", str(value))
+                
                 fieldnames = ['errorType', 'errorMSG']
                 writer = csv.DictWriter(f, fieldnames=fieldnames)
                 writer.writerow({"errorType": self.errorname,"errorMSG": str(value)})
         else:
             with open('errorLog.csv', 'a', newline='') as f:
-                print("added", str(value))
+                
                 fieldnames = ['errorMSG']
                 writer = csv.DictWriter(f, fieldnames=fieldnames)
                 writer.writerow({"errorType": self.errorname,"errorMSG": str(value)})
