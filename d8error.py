@@ -1,5 +1,6 @@
 from IPython.core.display import display, HTML, Markdown
 import json
+import os.path
 
 class Announce:
     def __init__(self, etype, value):
@@ -20,10 +21,27 @@ class Announce:
                 if (key in str(value)):
                     prewrittenMessge = True
             self.print = prewrittenMessge
+            
+        if not os.path.isfile("errorLog.csv"):
+            with open('errorLog.csv', 'w', newline='') as f:
+                print("created", str(value))
+                fieldnames = ['errorType', 'errorMSG']
+                writer = csv.DictWriter(f, fieldnames=fieldnames)
+                writer.writerow({"errorType": self.errorname,"errorMSG": str(value)})
+        else:
+            with open('errorLog.csv', 'a', newline='') as f:
+                print("added", str(value))
+                fieldnames = ['errorMSG']
+                writer = csv.DictWriter(f, fieldnames=fieldnames)
+                writer.writerow({"errorType": self.errorname,"errorMSG": str(value)})
         
     def tips(self):
         etype = self.etype
         value = self.value
+        
+        
+                
+
         with open("errorConfig.json", "r") as f:
             diction = json.load(f)
         exceptionClass = diction.get(self.errorname)
@@ -65,4 +83,3 @@ def test_exception(self, etype, value, tb, tb_offset=None):
         self.showtraceback((etype, value, tb), tb_offset=tb_offset)
     
 get_ipython().set_custom_exc((Exception,), test_exception)
-    
