@@ -2,6 +2,7 @@ from IPython.core.display import display, HTML, Markdown
 import json
 import os.path
 import csv
+import ipywidgets as widgets
 
 class Announce:
     def __init__(self, etype, value):
@@ -65,7 +66,40 @@ class Announce:
     def default(self):
         display(Markdown("It seems we have a "+self.errorname+ ". " +self.errorname+ "s are usually because of:"))
     def feedback(self):
-        display(Markdown("Please fill out this quick survey to help us improve the the error feedback [Data 8 Error Feedback Survey](https://forms.gle/6UZQjwZmAxVDMsBR6)"))
+        display(Markdown("Please fill this quick survey to help us improve the the error feedback [Data 8 Error Feedback Survey](https://forms.gle/6UZQjwZmAxVDMsBR6)"))
+
+        storage = [0, ""]
+
+        dropdown_label = widgets.Label(value="Was this feedback helpful?")
+        dropdown = widgets.Dropdown(options=[('', -1),
+                                             ('Extremely helpful', 5),
+                                             ('Very helpful', 4),
+                                             ('Somewhat helpful', 3),
+                                             ('Slightly helpful', 2),
+                                             ("Wait, that was English?", 1)],
+                                    value=-1)
+        def handle_slider_change(change):
+            storage[0] = dropdown.value
+            accordion.selected_index = 1           
+        dropdown.observe(handle_slider_change)
+        first_page = widgets.VBox([dropdown_label, dropdown])
+
+        textbox_label = widgets.Label(value="How was this feedback useful?")
+        textbox = widgets.Text(value="",
+                               placeholder="Press enter to submit.",
+                               layout=widgets.Layout(width='50%', margin='0px', padding='0px'))
+        submitted_label = widgets.Label(value="Thank you for your feedback!")
+        submitted_label.layout.visibility = 'hidden'
+        def submit_text(t):
+            submitted_label.layout.visibility = 'visible'
+            storage[1] = t.value
+            accordion.selected_index = None
+        textbox.on_submit(submit_text)
+        second_page = widgets.VBox([textbox_label, textbox, submitted_label])
+
+        accordion = widgets.Accordion([first_page, second_page])
+        display(accordion)
+        return storage
 
 def test_exception(self, etype, value, tb, tb_offset=None):
     try:
