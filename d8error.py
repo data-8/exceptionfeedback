@@ -81,4 +81,9 @@ def test_exception(self, etype, value, tb, tb_offset=None):
         self.showtraceback((etype, value, tb), tb_offset=tb_offset)
     
 get_ipython().set_custom_exc((Exception,), test_exception)
-    
+
+if not os.path.isfile("errorLog.csv"):
+    with open('errorLog.csv', 'w', newline='') as f:
+        fieldnames = ['errorType', 'errorMSG']
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+#s
