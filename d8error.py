@@ -120,4 +120,3 @@ if not os.path.isfile("errorLog.csv"):
     with open('errorLog.csv', 'w', newline='') as f:
         fieldnames = ['errorType', 'errorMSG']
         writer = csv.DictWriter(f, fieldnames=fieldnames)
-#s
