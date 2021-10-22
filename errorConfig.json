@@ -100,5 +100,14 @@
                     ]
                }
           }
+     ],
+     "ZeroDivisionError": [
+          {
+               "division by zero": {
+                    "helptext": [
+                         "Using the division symbol '/' where the denominator is 0 or a variable set to 0."
+                    ]
+               }
+          }
      ]
 }
