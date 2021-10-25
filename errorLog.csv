@@ -1,0 +1,5 @@
+0,TypeError,'int' object is not callable,3,234234234
+1,AttributeError,'NoneType' object has no attribute 'hello',4,efefef
+2,TypeError,'int' object is not callable,4,rtttttttttttttttttttttttt
+3,TypeError,'int' object is not callable,-1,
+4,TypeError,'int' object is not callable,4,fffffffffff

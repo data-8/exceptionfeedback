@@ -43,13 +43,11 @@ class Announce:
                 writeRow(f)
         else:
             if Announce.eindex == 1:
-                lineCount = 0
                 with open("errorLog.csv", 'r') as f:
-                    reader = csv.reader(f, delimiter=',')
-                    for line in reader:
-                        lineCount += 1
-                self.eindex = lineCount
-                Announce.eindex = lineCount + 1
+                    for row in reversed(list(csv.reader(f))):
+                        self.eindex = int(row[0]) + 1
+                        break
+                    Announce.eindex = self.eindex + 1
             with open('errorLog.csv', 'a', newline='') as f:
                 writeRow(f)
     
