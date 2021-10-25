@@ -3,3 +3,10 @@
 2,TypeError,'int' object is not callable,4,rtttttttttttttttttttttttt
 3,TypeError,'int' object is not callable,-1,
 4,TypeError,'int' object is not callable,4,fffffffffff
+5,IndexError,list index out of range,-1,
+6,TypeError,'int' object is not callable,-1,
+7,TypeError,'int' object is not callable,-1,
+8,TypeError,'int' object is not callable,4,dsfsdfsdfsdf
+9,TypeError,'int' object is not callable,-1,
+10,TypeError,'int' object is not callable,-1,
+11,NameError,name 'Table' is not defined,1,???????????

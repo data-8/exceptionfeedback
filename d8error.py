@@ -11,7 +11,7 @@ class Announce:
         Announce.eindex += 1
         self.etype = etype
         self.value = value
-        self.feedbackRating = -1
+        self.feedbackRating = 0
         self.feedbackMSG = ""
         self.errorname = str(etype().__class__.__name__)
         with open("errorConfig.json", "r") as f:
@@ -93,7 +93,7 @@ class Announce:
                 writer.writerows(lines)
 
         dropdown_label = widgets.Label(value="Was this feedback helpful?")
-        dropdown = widgets.Dropdown(options=[('', -1),
+        dropdown = widgets.Dropdown(options=[('', 0),
                                              ('Extremely helpful', 5),
                                              ('Very helpful', 4),
                                              ('Somewhat helpful', 3),
@@ -101,13 +101,9 @@ class Announce:
                                              ("Wait, that was English?", 1)],
                                     value=-1)
         def handle_slider_change(change):
-            rewriteRow = False
-            if self.feedbackRating == -1:
-                rewriteRow = True
             self.feedbackRating = dropdown.value
             accordion.selected_index = 1
-            if rewriteRow:
-                overwriteRow()
+            overwriteRow()
 
         dropdown.observe(handle_slider_change)
         first_page = widgets.VBox([dropdown_label, dropdown])
@@ -116,19 +112,15 @@ class Announce:
         textbox = widgets.Text(value="",
                                placeholder="Press enter to submit.",
                                layout=widgets.Layout(width='50%', margin='0px', padding='0px'))
-        submitted_label = widgets.Label(value="Thank you for your feedback!")
-        submitted_label.layout.visibility = 'hidden'
         def submit_text(t):
-            rewriteRow = False
-            if not self.feedbackMSG:
-                rewriteRow = True
             self.feedbackMSG = t.value
-            submitted_label.layout.visibility = 'visible'
+            textbox.layout.visibility = 'hidden'
+            dropdown.layout.visibility = 'hidden'
+            textbox_label.value = dropdown_label.value = "Thank you for your feedback!"
             accordion.selected_index = None
-            if rewriteRow:
-                overwriteRow()
+            overwriteRow()
         textbox.on_submit(submit_text)
-        second_page = widgets.VBox([textbox_label, textbox, submitted_label])
+        second_page = widgets.VBox([textbox_label, textbox])
 
         accordion = widgets.Accordion([first_page, second_page])
         display(accordion)
