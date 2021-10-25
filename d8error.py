@@ -5,9 +5,14 @@ import csv
 import ipywidgets as widgets
 
 class Announce:
+    eindex = 0
     def __init__(self, etype, value):
+        self.eindex = Announce.eindex
+        Announce.eindex += 1
         self.etype = etype
         self.value = value
+        self.feedbackRating = -1
+        self.feedbackMSG = ""
         self.errorname = str(etype().__class__.__name__)
         with open("errorConfig.json", "r") as f:
             diction = json.load(f)
@@ -23,24 +28,34 @@ class Announce:
                 if (key in str(value)):
                     prewrittenMessge = True
             self.print = prewrittenMessge
+
+        def writeRow(file):
+            fieldnames = ['index', 'errorType', 'errorMSG', 'feedbackRating', 'feedbackMSG']
+            writer = csv.DictWriter(file, fieldnames=fieldnames)
+            writer.writerow({"index": self.eindex,
+                            "errorType": self.errorname,
+                            "errorMSG": str(self.value),
+                            "feedbackRating": self.feedbackRating,
+                            "feedbackMSG": self.feedbackMSG})
             
         if not os.path.isfile("errorLog.csv"):
             with open('errorLog.csv', 'w', newline='') as f:
-                
-                fieldnames = ['errorType', 'errorMSG']
-                writer = csv.DictWriter(f, fieldnames=fieldnames)
-                writer.writerow({"errorType": self.errorname,"errorMSG": str(value)})
+                writeRow(f)
         else:
+            if Announce.eindex == 1:
+                lineCount = 0
+                with open("errorLog.csv", 'r') as f:
+                    reader = csv.reader(f, delimiter=',')
+                    for line in reader:
+                        lineCount += 1
+                self.eindex = lineCount
+                Announce.eindex = lineCount + 1
             with open('errorLog.csv', 'a', newline='') as f:
-                
-                fieldnames = ['errorType', 'errorMSG']
-                writer = csv.DictWriter(f, fieldnames=fieldnames)
-                writer.writerow({"errorType": self.errorname,"errorMSG": str(value)})
-        
+                writeRow(f)
+    
     def tips(self):
         etype = self.etype
         value = self.value
-
         with open("errorConfig.json", "r") as f:
             diction = json.load(f)
         exceptionClass = diction.get(self.errorname)
@@ -66,9 +81,18 @@ class Announce:
     def default(self):
         display(Markdown("It seems we have a "+self.errorname+ ". " +self.errorname+ "s are usually because of:"))
     def feedback(self):
-        display(Markdown("Please fill this quick survey to help us improve the the error feedback [Data 8 Error Feedback Survey](https://forms.gle/6UZQjwZmAxVDMsBR6)"))
-
-        storage = [0, ""]
+        def overwriteRow():
+            with open("errorLog.csv", 'r') as f:
+                reader = csv.reader(f, delimiter=',')
+                lines = []
+                for line in reader:
+                    if line[0] == str(self.eindex):
+                        line[3] = self.feedbackRating
+                        line[4] = self.feedbackMSG
+                    lines.append(line)
+            with open("errorLog.csv", 'w', newline='') as f:
+                writer = csv.writer(f, delimiter=',')
+                writer.writerows(lines)
 
         dropdown_label = widgets.Label(value="Was this feedback helpful?")
         dropdown = widgets.Dropdown(options=[('', -1),
@@ -79,8 +103,14 @@ class Announce:
                                              ("Wait, that was English?", 1)],
                                     value=-1)
         def handle_slider_change(change):
-            storage[0] = dropdown.value
-            accordion.selected_index = 1           
+            rewriteRow = False
+            if self.feedbackRating == -1:
+                rewriteRow = True
+            self.feedbackRating = dropdown.value
+            accordion.selected_index = 1
+            if rewriteRow:
+                overwriteRow()
+
         dropdown.observe(handle_slider_change)
         first_page = widgets.VBox([dropdown_label, dropdown])
 
@@ -91,15 +121,19 @@ class Announce:
         submitted_label = widgets.Label(value="Thank you for your feedback!")
         submitted_label.layout.visibility = 'hidden'
         def submit_text(t):
+            rewriteRow = False
+            if not self.feedbackMSG:
+                rewriteRow = True
+            self.feedbackMSG = t.value
             submitted_label.layout.visibility = 'visible'
-            storage[1] = t.value
             accordion.selected_index = None
+            if rewriteRow:
+                overwriteRow()
         textbox.on_submit(submit_text)
         second_page = widgets.VBox([textbox_label, textbox, submitted_label])
 
         accordion = widgets.Accordion([first_page, second_page])
         display(accordion)
-        return storage
 
 def test_exception(self, etype, value, tb, tb_offset=None):
     try:
@@ -115,8 +149,3 @@ def test_exception(self, etype, value, tb, tb_offset=None):
         self.showtraceback((etype, value, tb), tb_offset=tb_offset)
     
 get_ipython().set_custom_exc((Exception,), test_exception)
-
-if not os.path.isfile("errorLog.csv"):
-    with open('errorLog.csv', 'w', newline='') as f:
-        fieldnames = ['errorType', 'errorMSG']
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
