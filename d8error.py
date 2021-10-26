@@ -92,14 +92,14 @@ class Announce:
                 writer = csv.writer(f, delimiter=',')
                 writer.writerows(lines)
 
-        dropdown_label = widgets.Label(value="Was this feedback helpful?")
+        dropdown_label = widgets.Label(value="Was the message you saw useful?")
         dropdown = widgets.Dropdown(options=[('', 0),
-                                             ('Extremely helpful', 5),
-                                             ('Very helpful', 4),
-                                             ('Somewhat helpful', 3),
-                                             ('Slightly helpful', 2),
+                                             ('Extremely useful', 5),
+                                             ('Very useful', 4),
+                                             ('Somewhat useful', 3),
+                                             ('Slightly useful', 2),
                                              ("Wait, that was English?", 1)],
-                                    value=-1)
+                                    value=0)
         def handle_slider_change(change):
             self.feedbackRating = dropdown.value
             accordion.selected_index = 1
@@ -108,7 +108,7 @@ class Announce:
         dropdown.observe(handle_slider_change)
         first_page = widgets.VBox([dropdown_label, dropdown])
 
-        textbox_label = widgets.Label(value="How was this feedback useful?")
+        textbox_label = widgets.Label(value="Any other feedback?")
         textbox = widgets.Text(value="",
                                placeholder="Press enter to submit.",
                                layout=widgets.Layout(width='50%', margin='0px', padding='0px'))

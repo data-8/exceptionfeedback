@@ -10,3 +10,23 @@
 9,TypeError,'int' object is not callable,-1,
 10,TypeError,'int' object is not callable,-1,
 11,NameError,name 'Table' is not defined,1,???????????
+12,TypeError,'int' object is not callable,0,
+13,TypeError,'int' object is not callable,0,
+14,TypeError,'int' object is not callable,0,
+15,AttributeError,'NoneType' object has no attribute 'hello',0,
+16,TypeError,'int' object is not callable,0,
+17,TypeError,'int' object is not callable,0,
+18,TypeError,'int' object is not callable,0,
+19,TypeError,'int' object is not callable,0,
+20,TypeError,'int' object is not callable,0,
+21,TypeError,'int' object is not callable,0,
+22,TypeError,'int' object is not callable,0,
+23,TypeError,'int' object is not callable,0,
+24,TypeError,'int' object is not callable,0,
+25,TypeError,'int' object is not callable,4,efewfwefwe
+26,AttributeError,module 'numpy' has no attribute 'hi',1,Every day was pain
+27,TypeError,'int' object is not callable,4,d
+28,TypeError,'int' object is not callable,4,defef
+29,TypeError,'int' object is not callable,2,efewfwefwefwefwf
+30,SyntaxError,"invalid syntax (Temp/ipykernel_41580/1866965863.py, line 1)",2,No.
+31,IndexError,list index out of range,4,
