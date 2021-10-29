@@ -102,11 +102,9 @@ class Announce:
                                     value=0)
         def handle_slider_change(change):
             self.feedbackRating = dropdown.value
-            accordion.selected_index = 1
             overwriteRow()
-
         dropdown.observe(handle_slider_change)
-        first_page = widgets.VBox([dropdown_label, dropdown])
+        dropdownBox = widgets.VBox([dropdown_label, dropdown])
 
         textbox_label = widgets.Label(value="Any other feedback?")
         textbox = widgets.Text(value="",
@@ -116,13 +114,15 @@ class Announce:
             self.feedbackMSG = t.value
             textbox.layout.visibility = 'hidden'
             dropdown.layout.visibility = 'hidden'
-            textbox_label.value = dropdown_label.value = "Thank you for your feedback!"
-            accordion.selected_index = None
+            textbox_label.layout.visibility = 'hidden'
+            accordion.children = [widgets.Label(value="Thank you for your feedback!")]
             overwriteRow()
         textbox.on_submit(submit_text)
-        second_page = widgets.VBox([textbox_label, textbox])
+        textboxBox = widgets.VBox([textbox_label, textbox])
 
-        accordion = widgets.Accordion([first_page, second_page])
+        output = widgets.VBox([dropdownBox, textboxBox])
+        accordion = widgets.Accordion([output])
+        accordion.set_title(0, 'Feedback Form')
         display(accordion)
 
 def test_exception(self, etype, value, tb, tb_offset=None):

@@ -30,3 +30,13 @@
 29,TypeError,'int' object is not callable,2,efewfwefwefwefwf
 30,SyntaxError,"invalid syntax (Temp/ipykernel_41580/1866965863.py, line 1)",2,No.
 31,IndexError,list index out of range,4,
+32,TypeError,'int' object is not callable,3,No
+33,NameError,name 'data8' is not defined,4,hhhujngf
+34,TypeError,'int' object is not callable,3,No
+35,TypeError,'int' object is not callable,4,fff
+36,TypeError,'int' object is not callable,4,
+37,TypeError,'int' object is not callable,4,d
+38,TypeError,'int' object is not callable,4,ffff
+39,AttributeError,'NoneType' object has no attribute 'hello',5,cghjk
+40,TypeError,'int' object is not callable,0,
+41,TypeError,'int' object is not callable,3,jjj
