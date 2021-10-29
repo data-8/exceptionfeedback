@@ -5,7 +5,9 @@ import csv
 import ipywidgets as widgets
 
 class Announce:
+    # error index, serves as an id on the csv file
     eindex = 0
+
     def __init__(self, etype, value):
         self.eindex = Announce.eindex
         Announce.eindex += 1
@@ -29,6 +31,7 @@ class Announce:
                     prewrittenMessge = True
             self.print = prewrittenMessge
 
+        # save errors to errorLog.csv
         def writeRow(file):
             fieldnames = ['index', 'errorType', 'errorMSG', 'feedbackRating', 'feedbackMSG']
             writer = csv.DictWriter(file, fieldnames=fieldnames)
@@ -37,7 +40,7 @@ class Announce:
                             "errorMSG": str(self.value),
                             "feedbackRating": self.feedbackRating,
                             "feedbackMSG": self.feedbackMSG})
-            
+
         if not os.path.isfile("errorLog.csv"):
             with open('errorLog.csv', 'w', newline='') as f:
                 writeRow(f)
@@ -79,6 +82,7 @@ class Announce:
     def default(self):
         display(Markdown("It seems we have a "+self.errorname+ ". " +self.errorname+ "s are usually because of:"))
     def feedback(self):
+        # rewrites the feedbackRating & feedbackMSG columns on errorLog.csv
         def overwriteRow():
             with open("errorLog.csv", 'r') as f:
                 reader = csv.reader(f, delimiter=',')
@@ -92,46 +96,50 @@ class Announce:
                 writer = csv.writer(f, delimiter=',')
                 writer.writerows(lines)
 
+        # create & label a dropdown menu
         dropdown_label = widgets.Label(value="Was the message you saw useful?")
         dropdown = widgets.Dropdown(options=[('', 0),
                                              ('Extremely useful', 5),
                                              ('Very useful', 4),
                                              ('Somewhat useful', 3),
                                              ('Slightly useful', 2),
-                                             ("Wait, that was English?", 1)],
+                                             ('Not at all useful', 1)],
                                     value=0)
         def handle_slider_change(change):
+            # on change: rewrites the feedbackRating in the CSV
             self.feedbackRating = dropdown.value
             overwriteRow()
         dropdown.observe(handle_slider_change)
-        dropdownBox = widgets.VBox([dropdown_label, dropdown])
 
+        # create & label a textbox
         textbox_label = widgets.Label(value="Any other feedback?")
         textbox = widgets.Text(value="",
                                placeholder="Press enter to submit.",
                                layout=widgets.Layout(width='50%', margin='0px 8px 0px 0px', padding='0px'))
         def submit_text(t):
+            # on textbox submit: remove other fields and replace with a thank you message
             self.feedbackMSG = t.value
-            textbox.layout.visibility = 'hidden'
-            dropdown.layout.visibility = 'hidden'
-            textbox_label.layout.visibility = 'hidden'
             accordion.children = [widgets.Label(value="Thank you for your feedback!")]
             overwriteRow()
         textbox.on_submit(submit_text)
 
+        # create a submit button for the textbox
         submit_button = widgets.Button(description="Submit",
                                        layout=widgets.Layout(width='10%', min_width='80px'))
         def on_btn_click(b):
+            # on button click: performs same function as submitting the textbox
             submit_text(textbox)
         submit_button.on_click(on_btn_click)
         
+        # bundle together widgets for a cleaner output
+        dropdownBox = widgets.VBox([dropdown_label, dropdown])
         submitBox = widgets.HBox([textbox, submit_button])
         submitBox.layout.align_items = 'center'
         textboxBox = widgets.VBox([textbox_label, submitBox])
-
         output = widgets.VBox([dropdownBox, textboxBox])
         accordion = widgets.Accordion([output])
         accordion.set_title(0, '  Feedback Form')
+
         display(accordion)
 
 def test_exception(self, etype, value, tb, tb_offset=None):
