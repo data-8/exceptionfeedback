@@ -109,7 +109,7 @@ class Announce:
         textbox_label = widgets.Label(value="Any other feedback?")
         textbox = widgets.Text(value="",
                                placeholder="Press enter to submit.",
-                               layout=widgets.Layout(width='50%', margin='0px', padding='0px'))
+                               layout=widgets.Layout(width='50%', margin='0px 8px 0px 0px', padding='0px'))
         def submit_text(t):
             self.feedbackMSG = t.value
             textbox.layout.visibility = 'hidden'
@@ -118,11 +118,20 @@ class Announce:
             accordion.children = [widgets.Label(value="Thank you for your feedback!")]
             overwriteRow()
         textbox.on_submit(submit_text)
-        textboxBox = widgets.VBox([textbox_label, textbox])
+
+        submit_button = widgets.Button(description="Submit",
+                                       layout=widgets.Layout(width='10%', min_width='80px'))
+        def on_btn_click(b):
+            submit_text(textbox)
+        submit_button.on_click(on_btn_click)
+        
+        submitBox = widgets.HBox([textbox, submit_button])
+        submitBox.layout.align_items = 'center'
+        textboxBox = widgets.VBox([textbox_label, submitBox])
 
         output = widgets.VBox([dropdownBox, textboxBox])
         accordion = widgets.Accordion([output])
-        accordion.set_title(0, 'Feedback Form')
+        accordion.set_title(0, '  Feedback Form')
         display(accordion)
 
 def test_exception(self, etype, value, tb, tb_offset=None):
