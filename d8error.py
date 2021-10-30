@@ -5,7 +5,7 @@ import csv
 import ipywidgets as widgets
 
 class Announce:
-    # error index, serves as an id on the csv file
+    """error index, serves as an id on the csv file"""
     eindex = 0
 
     def __init__(self, etype, value):
@@ -31,8 +31,8 @@ class Announce:
                     prewrittenMessge = True
             self.print = prewrittenMessge
 
-        # save errors to errorLog.csv
         def writeRow(file):
+            """saves errors to errorLog.csv"""
             fieldnames = ['index', 'errorType', 'errorMSG', 'feedbackRating', 'feedbackMSG']
             writer = csv.DictWriter(file, fieldnames=fieldnames)
             writer.writerow({"index": self.eindex,
@@ -47,9 +47,9 @@ class Announce:
         else:
             if Announce.eindex == 1:
                 with open("errorLog.csv", 'r') as f:
-                    for row in reversed(list(csv.reader(f))):
-                        self.eindex = int(row[0]) + 1
-                        break
+                    for row in csv.reader(f):
+                        self.eindex = int(row[0])
+                    self.eindex += 1
                     Announce.eindex = self.eindex + 1
             with open('errorLog.csv', 'a', newline='') as f:
                 writeRow(f)
@@ -82,8 +82,8 @@ class Announce:
     def default(self):
         display(Markdown("It seems we have a "+self.errorname+ ". " +self.errorname+ "s are usually because of:"))
     def feedback(self):
-        # rewrites the feedbackRating & feedbackMSG columns on errorLog.csv
         def overwriteRow():
+            """rewrites the feedbackRating & feedbackMSG columns on errorLog.csv"""
             with open("errorLog.csv", 'r') as f:
                 reader = csv.reader(f, delimiter=',')
                 lines = []
@@ -96,7 +96,7 @@ class Announce:
                 writer = csv.writer(f, delimiter=',')
                 writer.writerows(lines)
 
-        # create & label a dropdown menu
+        """create & label a dropdown menu"""
         dropdown_label = widgets.Label(value="Was the message you saw useful?")
         dropdown = widgets.Dropdown(options=[('', 0),
                                              ('Extremely useful', 5),
@@ -106,32 +106,32 @@ class Announce:
                                              ('Not at all useful', 1)],
                                     value=0)
         def handle_slider_change(change):
-            # on change: rewrites the feedbackRating in the CSV
+            """on change: rewrites the feedbackRating in the CSV"""
             self.feedbackRating = dropdown.value
             overwriteRow()
         dropdown.observe(handle_slider_change)
 
-        # create & label a textbox
+        """create & label a textbox"""
         textbox_label = widgets.Label(value="Any other feedback?")
         textbox = widgets.Text(value="",
                                placeholder="Press enter to submit.",
                                layout=widgets.Layout(width='50%', margin='0px 8px 0px 0px', padding='0px'))
         def submit_text(t):
-            # on textbox submit: remove other fields and replace with a thank you message
+            """on textbox submit: remove other fields and replace with a thank you message"""
             self.feedbackMSG = t.value
             accordion.children = [widgets.Label(value="Thank you for your feedback!")]
             overwriteRow()
         textbox.on_submit(submit_text)
 
-        # create a submit button for the textbox
+        """create a submit button for the textbox"""
         submit_button = widgets.Button(description="Submit",
                                        layout=widgets.Layout(width='10%', min_width='80px'))
         def on_btn_click(b):
-            # on button click: performs same function as submitting the textbox
+            """on button click: submits textbox and replaces other fields with a thank you message"""
             submit_text(textbox)
         submit_button.on_click(on_btn_click)
         
-        # bundle together widgets for a cleaner output
+        """bundle together widgets for a cleaner output"""
         dropdownBox = widgets.VBox([dropdown_label, dropdown])
         submitBox = widgets.HBox([textbox, submit_button])
         submitBox.layout.align_items = 'center'
