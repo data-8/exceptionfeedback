@@ -3,6 +3,7 @@ import json
 import os.path
 import csv
 import ipywidgets as widgets
+import datetime
 
 class Announce:
     """error index, serves as an id on the csv file"""
@@ -33,13 +34,14 @@ class Announce:
 
         def writeRow(file):
             """saves errors to errorLog.csv"""
-            fieldnames = ['index', 'errorType', 'errorMSG', 'feedbackRating', 'feedbackMSG']
+            fieldnames = ['index', 'errorType', 'errorMSG', 'feedbackRating', 'feedbackMSG', "Time"]
             writer = csv.DictWriter(file, fieldnames=fieldnames)
             writer.writerow({"index": self.eindex,
                             "errorType": self.errorname,
                             "errorMSG": str(self.value),
                             "feedbackRating": self.feedbackRating,
-                            "feedbackMSG": self.feedbackMSG})
+                            "feedbackMSG": self.feedbackMSG,
+                            "Time": str(datetime.datetime.now())})
 
         if not os.path.isfile("errorLog.csv"):
             with open('errorLog.csv', 'w', newline='') as f:
