@@ -80,9 +80,9 @@ class Announce:
     def print(self, i):
         display(Markdown)
     def title(self):
-        display(Markdown("## **Uh-o it seems we have an error!**"))
+        display(Markdown("## There seems to be a "+self.errorname))
     def default(self):
-        display(Markdown("It seems we have a "+self.errorname+ ". " +self.errorname+ "s are usually because of:"))
+        display(Markdown("Here is some possible reasons for your error:"))
     def feedback(self):
         def overwriteRow():
             """rewrites the feedbackRating & feedbackMSG columns on errorLog.csv"""
