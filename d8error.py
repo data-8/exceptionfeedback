@@ -35,7 +35,7 @@ class Announce:
             self.print = prewrittenMessge
 
         # this generates a semi-readable summary of the traceback, which includes some information about the python code that caused the error
-        summary = traceback.extract_tb(tb).format()
+        summary = traceback.format_exc().splitlines()
         
         # iterate through traceback object to extract linenumber and bytecode of the first two frames
         curr_tb = tb.tb_next # skip the first frame which is the jupyter notebook frame
