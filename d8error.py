@@ -37,47 +37,33 @@ class Announce:
         # this generates a semi-readable summary of the traceback, which includes some information about the python code that caused the error
         summary = traceback.extract_tb(tb).format()
         
-        # iterate through traceback object to extract linenumber and bytecode
+        # iterate through traceback object to extract linenumber and bytecode of the first two frames
         curr_tb = tb.tb_next # skip the first frame which is the jupyter notebook frame
-        linenos = []
-        bytecodes = []
-        while curr_tb:
-            linenos.append(curr_tb.tb_lineno)
-            bytecodes.append(curr_tb.tb_frame.f_code.co_code)
+        bytecodesToLinenos = []
+        while curr_tb and len(bytecodesToLinenos) < 2:
+            bytecodesToLinenos.append((curr_tb.tb_frame.f_code.co_code, curr_tb.tb_lineno))
             curr_tb = curr_tb.tb_next
-            
-        if not os.path.isfile("errorLog.csv"):
-            with open('errorLog.csv', 'w', newline='') as f:
-                fieldnames = ['index', 'errorType', 'errorMSG', 'feedbackRating', 'feedbackMSG', 'time', 'lineNums', 'bytecodes', 'traceSummary']
-                writer = csv.DictWriter(f, fieldnames=fieldnames)
-                writer.writerow({"index": self.eindex,
-                                "errorType": self.errorname,
-                                "errorMSG": str(self.value),
-                                "feedbackRating": self.feedbackRating,
-                                "feedbackMSG": self.feedbackMSG,
-                                "Time": str(datetime.datetime.now()),
-                                "lineNums": linenos, 
-                                "bytecodes": bytecodes, 
-                                "traceSummary":summary})
-        else:
-            if Announce.eindex == 1:
-                with open("errorLog.csv", 'r') as f:
-                    for row in csv.reader(f):
-                        self.eindex = int(row[0])
-                    self.eindex += 1
-                    Announce.eindex = self.eindex + 1
-            with open('errorLog.csv', 'a', newline='') as f:
-                fieldnames = ['index', 'errorType', 'errorMSG', 'feedbackRating', 'feedbackMSG', 'time', 'lineNums', 'bytecodes', 'traceSummary']
-                writer = csv.DictWriter(f, fieldnames=fieldnames)
-                writer.writerow({"index": self.eindex,
-                                "errorType": self.errorname,
-                                "errorMSG": str(self.value),
-                                "feedbackRating": self.feedbackRating,
-                                "feedbackMSG": self.feedbackMSG,
-                                "Time": str(datetime.datetime.now()),
-                                "lineNums": linenos, 
-                                "bytecodes": bytecodes, 
-                                "traceSummary":summary})
+
+
+        mode = 'w' if not os.path.isfile("errorLog.csv") else 'a'
+        if os.path.isfile("errorLog.csv") and Announce.eindex == 1:
+            with open("errorLog.csv", 'r') as f:
+                for row in csv.reader(f):
+                    self.eindex = int(row[0])
+                self.eindex += 1
+                Announce.eindex = self.eindex + 1
+        
+        with open('errorLog.csv', mode, newline='') as f:
+            fieldnames = ['index', 'errorType', 'errorMSG', 'feedbackRating', 'feedbackMSG', 'time', 'bytecodesToLinenos', 'traceSummary']
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writerow({"index": self.eindex,
+                            "errorType": self.errorname,
+                            "errorMSG": str(self.value),
+                            "feedbackRating": self.feedbackRating,
+                            "feedbackMSG": self.feedbackMSG,
+                            "time": str(datetime.datetime.now()),
+                            "bytecodesToLinenos": bytecodesToLinenos, 
+                            "traceSummary":summary})
     
     def tips(self):
         etype = self.etype
