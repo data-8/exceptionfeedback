@@ -4,6 +4,7 @@ import os.path
 import csv
 import ipywidgets as widgets
 import datetime
+import webbrowser
 
 class Announce:
     """error index, serves as an id on the csv file"""
@@ -80,9 +81,40 @@ class Announce:
     def print(self, i):
         display(Markdown)
     def title(self):
-        display(Markdown("## There seems to be a "+self.errorname))
+        display(Markdown("## **There seems to be a <font color='red'>" + self.errorname+ "<font>**" + "."))
     def default(self):
         display(Markdown("Here is some possible reasons for your error:"))
+    def resources(self):
+        display(Markdown("Still stuck? Here's some useful resources:"))
+        """create a submit button for the textbox"""
+        b1 = widgets.Button(description="Textbook",icon="square",
+                                               layout=widgets.Layout(width='20%', min_width='80px'))
+        b2 = widgets.Button(description="Data 8 Reference", icon="square",
+                                               layout=widgets.Layout(width='30%', min_width='80px'))
+        b3 = widgets.Button(description="Office Hours",icon="square",
+                                               layout=widgets.Layout(width='20%', min_width='80px'))
+        output = widgets.Output()
+        """aligns buttons horizontally"""
+        h1 = widgets.HBox(children=[b1,b2,b3])
+        display(h1)
+        def b1_click(b):
+            """clicking button sends you to url"""
+            with output:
+                webbrowser.open("http://data8.org/fa21/python-reference.html")
+        def b2_click(b):
+            """clicking button sends you to url"""
+            with output:
+                webbrowser.open("https://oh.data8.org")
+        def b3_click(b):
+            """clicking button sends you to url"""
+            with output:
+                webbrowser.open("http://data8.org/fa21/python-reference.html")
+        b1.on_click(b1_click)
+        b2.on_click(b2_click)
+        b3.on_click(b3_click)
+        
+       
+    
     def feedback(self):
         def overwriteRow():
             """rewrites the feedbackRating & feedbackMSG columns on errorLog.csv"""
@@ -150,8 +182,7 @@ def test_exception(self, etype, value, tb, tb_offset=None):
         if announce.print:
             announce.title()
             announce.tips()
-            announce.data8()
-            announce.furtherTips()
+            announce.resources()
             announce.feedback()
         self.showtraceback((etype, value, tb), tb_offset=tb_offset)
     except:
