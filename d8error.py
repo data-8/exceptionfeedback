@@ -112,7 +112,15 @@ class Announce:
         b1.on_click(b1_click)
         b2.on_click(b2_click)
         b3.on_click(b3_click)
-        
+    def scroll(self, etype, value, tb, tb_offset=None):
+        b=widgets.HTML(
+        value=self.showtraceback((etype, value, tb), tb_offset=tb_offset),
+        placeholder='Some HTML',
+        description='Some HTML',
+        disabled=True
+        )
+        a = HBox([b], layout=Layout(height='20px', overflow_y='auto'))
+        display(a)
        
     
     def feedback(self):
@@ -184,7 +192,8 @@ def test_exception(self, etype, value, tb, tb_offset=None):
             announce.tips()
             announce.resources()
             announce.feedback()
-        self.showtraceback((etype, value, tb), tb_offset=tb_offset)
+            announce.scroll(self, etype, value, tb, tb_offset)
+        #self.showtraceback((etype, value, tb), tb_offset=tb_offset)
     except:
         self.showtraceback((etype, value, tb), tb_offset=tb_offset)
     
