@@ -39,9 +39,12 @@ class Announce:
         
         # iterate through traceback object to extract linenumber and bytecode of the first two frames
         curr_tb = tb.tb_next # skip the first frame which is the jupyter notebook frame
-        bytecodesToLinenos = []
-        while curr_tb and len(bytecodesToLinenos) < 2:
-            bytecodesToLinenos.append((curr_tb.tb_frame.f_code.co_code, curr_tb.tb_lineno))
+
+        # get code from jupyter notebook
+        codeToLinenos = []
+        while curr_tb and len(codeToLinenos) < 2:
+            code = self.parseTraceback(curr_tb)
+            codeToLinenos.append((code, curr_tb.tb_lineno))
             curr_tb = curr_tb.tb_next
 
 
@@ -54,7 +57,7 @@ class Announce:
                 Announce.eindex = self.eindex + 1
         
         with open('errorLog.csv', mode, newline='') as f:
-            fieldnames = ['index', 'errorType', 'errorMSG', 'feedbackRating', 'feedbackMSG', 'time', 'bytecodesToLinenos', 'traceSummary']
+            fieldnames = ['index', 'errorType', 'errorMSG', 'feedbackRating', 'feedbackMSG', 'time', 'codeToLinenos', 'traceSummary']
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writerow({"index": self.eindex,
                             "errorType": self.errorname,
@@ -62,9 +65,12 @@ class Announce:
                             "feedbackRating": self.feedbackRating,
                             "feedbackMSG": self.feedbackMSG,
                             "time": str(datetime.datetime.now()),
-                            "bytecodesToLinenos": bytecodesToLinenos, 
+                            "codeToLinenos": codeToLinenos, 
                             "traceSummary":summary})
     
+    def parseTraceback(self, tb):
+        return traceback.extract_tb(tb)[0].line
+
     def tips(self):
         etype = self.etype
         value = self.value
