@@ -97,6 +97,7 @@ class Announce:
         """aligns buttons horizontally"""
         h1 = widgets.HBox(children=[b1,b2,b3])
         display(h1)
+
         def b1_click(b):
             """clicking button sends you to url"""
             with output:
@@ -104,24 +105,14 @@ class Announce:
         def b2_click(b):
             """clicking button sends you to url"""
             with output:
-                webbrowser.open("https://oh.data8.org")
+                webbrowser.open("http://data8.org/fa21/python-reference.html")
         def b3_click(b):
             """clicking button sends you to url"""
             with output:
-                webbrowser.open("http://data8.org/fa21/python-reference.html")
+                webbrowser.open("https://oh.data8.org/")
         b1.on_click(b1_click)
         b2.on_click(b2_click)
         b3.on_click(b3_click)
-    def scroll(self, etype, value, tb, tb_offset=None):
-        b=widgets.HTML(
-        value=self.showtraceback((etype, value, tb), tb_offset=tb_offset),
-        placeholder='Some HTML',
-        description='Some HTML',
-        disabled=True
-        )
-        a = HBox([b], layout=Layout(height='20px', overflow_y='auto'))
-        display(a)
-       
     
     def feedback(self):
         def overwriteRow():
@@ -189,12 +180,17 @@ def test_exception(self, etype, value, tb, tb_offset=None):
         announce = Announce(etype, value)
         if announce.print:
             announce.title()
+            output = widgets.Output(layout={'border': '1px solid grey', 'height':'85px', 'overflow_y':'auto', 'background-color': 'red'})
+            with output: 
+                self.showtraceback((etype, value, tb), tb_offset=tb_offset)
+            display(output)
             announce.tips()
             announce.resources()
             announce.feedback()
-            announce.scroll(self, etype, value, tb, tb_offset)
+
         #self.showtraceback((etype, value, tb), tb_offset=tb_offset)
     except:
+        print("noway1")
         self.showtraceback((etype, value, tb), tb_offset=tb_offset)
     
 get_ipython().set_custom_exc((Exception,), test_exception)
