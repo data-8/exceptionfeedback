@@ -46,13 +46,13 @@ class Announce:
         curr_tb = tb.tb_next # skip the first frame which is the jupyter notebook frame
 
         # get code from jupyter notebook
-        codeToLinenos = []
-        while curr_tb and len(codeToLinenos) < 2:
+        self.codeToLinenos = []
+
+        while curr_tb and len(self.codeToLinenos) < 2:
             code = self.parseTraceback(curr_tb)
-            codeToLinenos.append((code, curr_tb.tb_lineno))
+            self.codeToLinenos.append((code, curr_tb.tb_lineno))
             curr_tb = curr_tb.tb_next
-
-
+            
         mode = 'w' if not os.path.isfile("errorLog.csv") else 'a'
         if os.path.isfile("errorLog.csv") and Announce.eindex == 1:
             with open("errorLog.csv", 'r') as f:
@@ -70,7 +70,7 @@ class Announce:
                             "feedbackRating": self.feedbackRating,
                             "feedbackMSG": self.feedbackMSG,
                             "time": str(datetime.datetime.now()),
-                            "codeToLinenos": codeToLinenos, 
+                            "codeToLinenos": self.codeToLinenos, 
                             "traceSummary":summary})
     
     def parseTraceback(self, tb):
@@ -100,7 +100,8 @@ class Announce:
     def print(self, i):
         display(Markdown)
     def title(self):
-        display(Markdown("## **There seems to be a <font color='red'>" + self.errorname+ "<font>**" + "."))
+        "## **There seems to be a <font color='red'>" + self.errorname+ "<font>**" + "."
+        display(Markdown("## **" + self.errorname + "**" + "<font size = '3px'>" + ",  line " + str(self.codeToLinenos[0][1]) + "<font>"))
     def default(self):
         display(Markdown("Here is some possible reasons for your error:"))
     def resources(self):
