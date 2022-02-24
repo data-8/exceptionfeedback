@@ -5,6 +5,11 @@ import csv
 import ipywidgets as widgets
 import datetime
 import traceback
+from IPython.display import clear_output
+import webbrowser
+from IPython.display import Javascript
+import functools
+
 class Announce:
     """error index, serves as an id on the csv file"""
     eindex = 0
@@ -101,7 +106,7 @@ class Announce:
     def resources(self):
         display(Markdown("Still stuck? Here's some useful resources:"))
         """create a submit button for the textbox"""
-        b1 = widgets.Button(description="Textbook",icon="square",
+        b1 = widgets.Button(description="Textbook",icon="square", url="www.google.com",
                                                layout=widgets.Layout(width='20%', min_width='80px'))
         b2 = widgets.Button(description="Data 8 Reference", icon="square",
                                                layout=widgets.Layout(width='30%', min_width='80px'))
@@ -112,21 +117,15 @@ class Announce:
         h1 = widgets.HBox(children=[b1,b2,b3])
         display(h1)
 
-        def b1_click(b):
+            
+        def button_click(b1, url):
             """clicking button sends you to url"""
             with output:
-                webbrowser.open("http://data8.org/fa21/python-reference.html")
-        def b2_click(b):
-            """clicking button sends you to url"""
-            with output:
-                webbrowser.open("http://data8.org/fa21/python-reference.html")
-        def b3_click(b):
-            """clicking button sends you to url"""
-            with output:
-                webbrowser.open("https://oh.data8.org/")
-        b1.on_click(b1_click)
-        b2.on_click(b2_click)
-        b3.on_click(b3_click)
+                webbrowser.open(url);
+
+        b1.on_click(functools.partial(button_click, url="http://data8.org/zero-to-data-8/textbook.html"))
+        b2.on_click(functools.partial(button_click, url="http://data8.org/fa21/python-reference.html"))
+        b3.on_click(functools.partial(button_click, url="https://oh.data8.org/"))
     
     def feedback(self):
         def overwriteRow():
@@ -190,21 +189,16 @@ class Announce:
         display(accordion)
 
 def test_exception(self, etype, value, tb, tb_offset=None):
-    try:
         announce = Announce(etype, value, tb, tb_offset)
         if announce.print:
             announce.title()
             output = widgets.Output(layout={'border': '1px solid grey', 'height':'85px', 'overflow_y':'auto', 'background-color': 'red'})
             with output: 
+                clear_output()
                 self.showtraceback((etype, value, tb), tb_offset=tb_offset)
             display(output)
             announce.tips()
             announce.resources()
             announce.feedback()
-
-        #self.showtraceback((etype, value, tb), tb_offset=tb_offset)
-    except:
-        print("noway1")
-        self.showtraceback((etype, value, tb), tb_offset=tb_offset)
     
 get_ipython().set_custom_exc((Exception,), test_exception)
