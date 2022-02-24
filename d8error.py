@@ -189,6 +189,7 @@ class Announce:
         display(accordion)
 
 def test_exception(self, etype, value, tb, tb_offset=None):
+    try:
         announce = Announce(etype, value, tb, tb_offset)
         if announce.print:
             announce.title()
@@ -200,5 +201,7 @@ def test_exception(self, etype, value, tb, tb_offset=None):
             announce.tips()
             announce.resources()
             announce.feedback()
+    except: 
+        self.showtraceback((etype, value, tb), tb_offset=tb_offset)
     
 get_ipython().set_custom_exc((Exception,), test_exception)
