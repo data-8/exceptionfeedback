@@ -5,6 +5,11 @@ import csv
 import ipywidgets as widgets
 import datetime
 import traceback
+from IPython.display import clear_output
+import webbrowser
+from IPython.display import Javascript
+import functools
+
 class Announce:
     """error index, serves as an id on the csv file"""
     eindex = 0
@@ -41,13 +46,13 @@ class Announce:
         curr_tb = tb.tb_next # skip the first frame which is the jupyter notebook frame
 
         # get code from jupyter notebook
-        codeToLinenos = []
-        while curr_tb and len(codeToLinenos) < 2:
+        self.codeToLinenos = []
+
+        while curr_tb and len(self.codeToLinenos) < 2:
             code = self.parseTraceback(curr_tb)
-            codeToLinenos.append((code, curr_tb.tb_lineno))
+            self.codeToLinenos.append((code, curr_tb.tb_lineno))
             curr_tb = curr_tb.tb_next
-
-
+            
         mode = 'w' if not os.path.isfile("errorLog.csv") else 'a'
         if os.path.isfile("errorLog.csv") and Announce.eindex == 1:
             with open("errorLog.csv", 'r') as f:
@@ -65,7 +70,7 @@ class Announce:
                             "feedbackRating": self.feedbackRating,
                             "feedbackMSG": self.feedbackMSG,
                             "time": str(datetime.datetime.now()),
-                            "codeToLinenos": codeToLinenos, 
+                            "codeToLinenos": self.codeToLinenos, 
                             "traceSummary":summary})
     
     def parseTraceback(self, tb):
@@ -95,9 +100,34 @@ class Announce:
     def print(self, i):
         display(Markdown)
     def title(self):
-        display(Markdown("## **Uh-o it seems we have an error!**"))
+        "## **There seems to be a <font color='red'>" + self.errorname+ "<font>**" + "."
+        display(Markdown("## **" + self.errorname + "**" + "<font size = '3px'>" + ",  line " + str(self.codeToLinenos[0][1]) + "<font>"))
     def default(self):
-        display(Markdown("It seems we have a "+self.errorname+ ". " +self.errorname+ "s are usually because of:"))
+        display(Markdown("Here is some possible reasons for your error:"))
+    def resources(self):
+        display(Markdown("Still stuck? Here's some useful resources:"))
+        """create a submit button for the textbox"""
+        b1 = widgets.Button(description="Textbook",icon="square", url="www.google.com",
+                                               layout=widgets.Layout(width='20%', min_width='80px'))
+        b2 = widgets.Button(description="Data 8 Reference", icon="square",
+                                               layout=widgets.Layout(width='30%', min_width='80px'))
+        b3 = widgets.Button(description="Office Hours",icon="square",
+                                               layout=widgets.Layout(width='20%', min_width='80px'))
+        output = widgets.Output()
+        """aligns buttons horizontally"""
+        h1 = widgets.HBox(children=[b1,b2,b3])
+        display(h1)
+
+            
+        def button_click(b1, url):
+            """clicking button sends you to url"""
+            with output:
+                webbrowser.open(url);
+
+        b1.on_click(functools.partial(button_click, url="http://data8.org/zero-to-data-8/textbook.html"))
+        b2.on_click(functools.partial(button_click, url="http://data8.org/fa21/python-reference.html"))
+        b3.on_click(functools.partial(button_click, url="https://oh.data8.org/"))
+    
     def feedback(self):
         def overwriteRow():
             """rewrites the feedbackRating & feedbackMSG columns on errorLog.csv"""
@@ -164,12 +194,15 @@ def test_exception(self, etype, value, tb, tb_offset=None):
         announce = Announce(etype, value, tb, tb_offset)
         if announce.print:
             announce.title()
+            output = widgets.Output(layout={'border': '1px solid grey', 'height':'85px', 'overflow_y':'auto', 'background-color': 'red'})
+            with output: 
+                clear_output()
+                self.showtraceback((etype, value, tb), tb_offset=tb_offset)
+            display(output)
             announce.tips()
-            announce.data8()
-            announce.furtherTips()
+            announce.resources()
             announce.feedback()
-        self.showtraceback((etype, value, tb), tb_offset=tb_offset)
-    except:
+    except: 
         self.showtraceback((etype, value, tb), tb_offset=tb_offset)
     
 get_ipython().set_custom_exc((Exception,), test_exception)
