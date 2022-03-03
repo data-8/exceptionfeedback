@@ -5,11 +5,6 @@ import csv
 import ipywidgets as widgets
 import datetime
 import traceback
-from IPython.display import clear_output
-import webbrowser
-from IPython.display import Javascript
-import functools
-
 class Announce:
     """error index, serves as an id on the csv file"""
     eindex = 0
@@ -47,13 +42,13 @@ class Announce:
         curr_tb = tb.tb_next # skip the first frame which is the jupyter notebook frame
 
         # get code from jupyter notebook
-        self.codeToLinenos = []
-
-        while curr_tb and len(self.codeToLinenos) < 2:
+        codeToLinenos = []
+        while curr_tb and len(codeToLinenos) < 2:
             code = self.parseTraceback(curr_tb)
-            self.codeToLinenos.append((code, curr_tb.tb_lineno))
+            codeToLinenos.append((code, curr_tb.tb_lineno))
             curr_tb = curr_tb.tb_next
-            
+
+
         mode = 'w' if not os.path.isfile("errorLog.csv") else 'a'
         if os.path.isfile("errorLog.csv") and Announce.eindex == 1:
             with open("errorLog.csv", 'r') as f:
@@ -71,7 +66,7 @@ class Announce:
                             "feedbackRating": self.feedbackRating,
                             "feedbackMSG": self.feedbackMSG,
                             "time": str(datetime.datetime.now()),
-                            "codeToLinenos": self.codeToLinenos, 
+                            "codeToLinenos": codeToLinenos, 
                             "traceSummary":summary})
     
     def parseTraceback(self, tb):
@@ -101,9 +96,9 @@ class Announce:
     def print(self, i):
         display(Markdown)
     def title(self):
-        "## **There seems to be a <font color='red'>" + self.errorname+ "<font>**" + "."
-        display(Markdown("## **" + self.errorname + "**" + "<font size = '3px'>" + ",  line " + str(self.codeToLinenos[0][1]) + "<font>"))
+        display(Markdown("## **Uh-o it seems we have an error!**"))
     def default(self):
+<<<<<<< HEAD
         display(Markdown("Here is some possible reasons for your error:"))
     def resources(self):
         """Generate helpful resources"""
@@ -131,6 +126,9 @@ class Announce:
             buttons[count].on_click(functools.partial(button_click, url=resPair[1]))
             count += 1
 
+=======
+        display(Markdown("It seems we have a "+self.errorname+ ". " +self.errorname+ "s are usually because of:"))
+>>>>>>> 766cb8329c2329f37129e2c0e75281998a3d8cdf
     def feedback(self):
         def overwriteRow():
             """rewrites the feedbackRating & feedbackMSG columns on errorLog.csv"""
@@ -197,11 +195,16 @@ def test_exception(self, etype, value, tb, tb_offset=None):
         announce = Announce(etype, value, tb, tb_offset)
         if announce.print:
             announce.title()
+<<<<<<< HEAD
             self.showtraceback((etype, value, tb), tb_offset=tb_offset)
+=======
+>>>>>>> 766cb8329c2329f37129e2c0e75281998a3d8cdf
             announce.tips()
-            announce.resources()
+            announce.data8()
+            announce.furtherTips()
             announce.feedback()
-    except: 
+        self.showtraceback((etype, value, tb), tb_offset=tb_offset)
+    except:
         self.showtraceback((etype, value, tb), tb_offset=tb_offset)
     
 get_ipython().set_custom_exc((Exception,), test_exception)
