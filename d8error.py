@@ -24,6 +24,7 @@ class Announce:
         self.errorname = str(etype().__class__.__name__)
         self.tb = tb
         self.tb_offset = tb_offset
+        self.resourceList = {}
         with open("errorConfig.json", "r") as f:
             diction = json.load(f)
         exceptionClass = diction.get(self.errorname)
@@ -105,29 +106,31 @@ class Announce:
     def default(self):
         display(Markdown("Here is some possible reasons for your error:"))
     def resources(self):
+        """Generate helpful resources"""
         display(Markdown("Still stuck? Here's some useful resources:"))
-        """create a submit button for the textbox"""
-        b1 = widgets.Button(description="Textbook",icon="square", url="www.google.com",
-                                               layout=widgets.Layout(width='20%', min_width='80px'))
-        b2 = widgets.Button(description="Data 8 Reference", icon="square",
-                                               layout=widgets.Layout(width='30%', min_width='80px'))
-        b3 = widgets.Button(description="Office Hours",icon="square",
-                                               layout=widgets.Layout(width='20%', min_width='80px'))
+        self.resourceList = {'Textbook': 'http://data8.org/zero-to-data-8/textbook.html', 'Data 8 Reference': 'http://data8.org/fa21/python-reference.html', 'Office Hours': 'https://oh.data8.org/'}
+        self.makeResources()
+    def makeResources(self):
+        """Helper method for creating resource buttons based on the resource list for error"""
+        buttons = []
+        for text in self.resourceList.keys():
+            currButton = widgets.Button(description=text,icon="square")
+            buttons.append(currButton)
         output = widgets.Output()
-        """aligns buttons horizontally"""
-        h1 = widgets.HBox(children=[b1,b2,b3])
+        h1 = widgets.HBox(buttons)
         display(h1)
 
-            
         def button_click(b1, url):
-            """clicking button sends you to url"""
+            """clicking button sends you to resource URL"""
             with output:
                 webbrowser.open(url);
+        
+        # Configure button on click functions for each of the resources
+        count = 0
+        for resPair in (self.resourceList.items()):
+            buttons[count].on_click(functools.partial(button_click, url=resPair[1]))
+            count += 1
 
-        b1.on_click(functools.partial(button_click, url="http://data8.org/zero-to-data-8/textbook.html"))
-        b2.on_click(functools.partial(button_click, url="http://data8.org/fa21/python-reference.html"))
-        b3.on_click(functools.partial(button_click, url="https://oh.data8.org/"))
-    
     def feedback(self):
         def overwriteRow():
             """rewrites the feedbackRating & feedbackMSG columns on errorLog.csv"""
@@ -194,11 +197,7 @@ def test_exception(self, etype, value, tb, tb_offset=None):
         announce = Announce(etype, value, tb, tb_offset)
         if announce.print:
             announce.title()
-            output = widgets.Output(layout={'border': '1px solid grey', 'height':'85px', 'overflow_y':'auto', 'background-color': 'red'})
-            with output: 
-                clear_output()
-                self.showtraceback((etype, value, tb), tb_offset=tb_offset)
-            display(output)
+            self.showtraceback((etype, value, tb), tb_offset=tb_offset)
             announce.tips()
             announce.resources()
             announce.feedback()
