@@ -9,6 +9,7 @@ from IPython.display import clear_output
 import webbrowser
 from IPython.display import Javascript
 import functools
+import iwut
 
 class Announce:
     """error index, serves as an id on the csv file"""
@@ -104,7 +105,7 @@ class Announce:
         "## **There seems to be a <font color='red'>" + self.errorname+ "<font>**" + "."
         display(Markdown("## **" + self.errorname + "**" + "<font size = '3px'>" + ",  line " + str(self.codeToLinenos[0][1]) + "<font>"))
     def default(self):
-        display(Markdown("Here is some possible reasons for your error:"))
+        display(Markdown("Here are some possible reasons for your error:"))
     def resources(self):
         """Generate helpful resources"""
         display(Markdown("Still stuck? Here's some useful resources:"))
@@ -197,11 +198,11 @@ def test_exception(self, etype, value, tb, tb_offset=None):
         announce = Announce(etype, value, tb, tb_offset)
         if announce.print:
             announce.title()
-            self.showtraceback((etype, value, tb), tb_offset=tb_offset)
+            display(iwut.get_wut_traceback(etype, value, tb, tb_offset))
             announce.tips()
             announce.resources()
             announce.feedback()
     except: 
-        self.showtraceback((etype, value, tb), tb_offset=tb_offset)
+        display(iwut.get_wut_traceback(etype, value, tb, tb_offset))
     
 get_ipython().set_custom_exc((Exception,), test_exception)
