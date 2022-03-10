@@ -124,7 +124,7 @@ class Announce:
         def button_click(b1, url):
             """clicking button sends you to resource URL"""
             with output:
-                webbrowser.open(url);
+                webbrowser.open(url)
         
         # Configure button on click functions for each of the resources
         count = 0
