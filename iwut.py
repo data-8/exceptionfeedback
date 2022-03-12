@@ -1,7 +1,3 @@
-from IPython.core.magic import (
-    Magics, magics_class, line_magic, cell_magic,
-    line_cell_magic
-)
 from IPython.core.display import HTML, display
 from IPython import get_ipython
 from traceback import FrameSummary, linecache
